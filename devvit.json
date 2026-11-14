@@ -1,0 +1,79 @@
+{
+  "$schema": "https://developers.reddit.com/schema/config-file.v1.json",
+  "name": "bastrop-events",
+  "server": {
+    "dir": "dist/server",
+    "entry": "index.cjs"
+  },
+  "menu": {
+    "items": [
+      {
+        "label": "Weekly events: post now",
+        "description": "Posts the events calendar for the week starting this coming Sunday (today, if it is Sunday).",
+        "location": "subreddit",
+        "forUserType": "moderator",
+        "endpoint": "/internal/menu/post-weekly-events"
+      },
+      {
+        "label": "Weekly events: test sources",
+        "description": "Reads both calendars and reports how many events were found. Posts nothing.",
+        "location": "subreddit",
+        "forUserType": "moderator",
+        "endpoint": "/internal/menu/test-weekly-events"
+      }
+    ]
+  },
+  "scheduler": {
+    "tasks": {
+      "weeklyEventsCheck": {
+        "endpoint": "/internal/scheduler/weekly-events-check",
+        "cron": "0 * * * 0"
+      }
+    }
+  },
+  "settings": {
+    "subreddit": {
+      "weeklyEventsEnabled": {
+        "type": "boolean",
+        "label": "Post the weekly events calendar automatically",
+        "helpText": "Posts once every Sunday at noon Central.",
+        "defaultValue": true
+      },
+      "weeklyEventsTitle": {
+        "type": "string",
+        "label": "Post title",
+        "helpText": "{start} and {end} become the first and last day (Nov 15), {year} the year.",
+        "defaultValue": "Bastrop County Weekly Events | {start} to {end}, {year}"
+      },
+      "weeklyEventsExclude": {
+        "type": "paragraph",
+        "label": "Leave out events whose title matches",
+        "helpText": "One pattern per line, not case sensitive. Example: board retreat",
+        "defaultValue": ""
+      },
+      "weeklyEventsSticky": {
+        "type": "boolean",
+        "label": "Pin the post",
+        "defaultValue": false
+      }
+    }
+  },
+  "scripts": {
+    "build": "npm run build",
+    "dev": "npm run build:watch"
+  },
+  "permissions": {
+    "http": {
+      "enable": true,
+      "domains": ["bastropcountycalendar.com", "api.withapps.io"]
+    },
+    "redis": true,
+    "reddit": {
+      "enable": true,
+      "scope": "user"
+    }
+  },
+  "dev": {
+    "subreddit": "bastrop_events_dev"
+  }
+}
